@@ -18,7 +18,7 @@ function View() {
      })
   })
   return (
-    <div className="viewParentDiv">
+    <div className="viewParentDiv"> 
       <div className="imageShowDiv">
         <img
           src={postDetails.url}

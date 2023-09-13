@@ -2,16 +2,18 @@ import React, { useContext, useEffect, useState } from 'react';
 
 import Heart from '../../assets/Heart';
 import './Post.css';
-import { collection, doc, getDoc, getDocs } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, limit, orderBy, query } from 'firebase/firestore';
 import { db } from '../../Config/firebase';
 import { PostContext } from '../../Context/postContext';
 import { useNavigate } from 'react-router-dom';
 
 function Posts() {
   const navigate = useNavigate()
+  const [limited, setLimited] = useState([])
   const  productRef = collection(db, "products")
   const [products, setProducts] = useState([]);
   const {setPostDetails} = useContext(PostContext)
+  const q = query(productRef,orderBy('createdAt',"desc"),limit(8));
   useEffect(() => {
     getDocs(productRef).then(res => {
       const allpost = res.docs.map((product) => {
@@ -21,6 +23,12 @@ function Posts() {
         }
       })
       setProducts(allpost);
+    })
+  },[])
+  useEffect(() => {
+    getDocs(q).then(res => {
+      const limitedpost = res.docs.map(product => product.data());
+      setLimited(limitedpost);
     })
   },[])
   return (
@@ -62,22 +70,27 @@ function Posts() {
           <span>Fresh recommendations</span>
         </div>
         <div className="cards">
-          <div className="card">
+          {
+            limited.map(product => (
+              <div className="card">
             <div className="favorite">
               <Heart></Heart>
             </div>
             <div className="image">
-              <img src="../../../Images/R15V3.jpg" alt="" />
+              <img src={product.url} alt="" />
             </div>
             <div className="content">
-              <p className="rate">&#x20B9; 250000</p>
-              <span className="kilometer">Two Wheeler</span>
-              <p className="name"> YAMAHA R15V3</p>
+              <p className="rate">&#x20B9; {product.price}</p>
+              <span className="kilometer">{product.category}</span>
+              <p className="name"> {product.name}</p>
             </div>
             <div className="date">
-              <span>10/5/2021</span>
+              <span>{product.createdAt}</span>
             </div>
           </div>
+            ))
+            
+          }
         </div>
       </div>
     </div>

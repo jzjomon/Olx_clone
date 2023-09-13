@@ -19,6 +19,13 @@ function Header() {
       navigate('/login')
     })
   }
+  const handleSell = () => {
+    if(user){
+      navigate('/create');
+    }else {
+      alert('please login !')
+    }
+  }
   return (
     <div className="headerParentDiv">
       <div className="headerChildDiv">
@@ -46,16 +53,16 @@ function Header() {
           <Arrow></Arrow>
         </div>
         <div className="loginPage">
-          {user?.displayName ? <span>{user.displayName}</span>: <span onClick={() =>navigate('/login')}>Login</span>}
+          {user?.displayName ? <span style={{cursor: 'pointer'}}>{user.displayName}</span>: <span style={{cursor: "pointer"}} onClick={() =>navigate('/login')}>Login</span>}
           <hr />
         </div>
-          {user?.displayName ? <span onClick={logout}>Logout</span> : <span/>}
+          {user?.displayName ? <span onClick={logout} style={{cursor: "pointer"}} >Logout</span> : <span/>}
 
         <div className="sellMenu">
           <SellButton></SellButton>
           <div className="sellMenuContent">
             <SellButtonPlus></SellButtonPlus>
-            <span onClick={() => navigate('/create')}>SELL</span>
+            <span onClick={handleSell}>SELL</span>
           </div>
         </div>
       </div>
